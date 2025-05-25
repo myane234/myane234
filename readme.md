@@ -7,5 +7,4 @@
 ![](https://github-readme-streak-stats.herokuapp.com/?user=Myane234&theme=default&hide_border=true)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=Myane234&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
 
-![Snake Animation](https://github.com/myane234/myane234/blob/output/github-contribution-grid-snake.svg)
-[![Wakatime Stats](https://github-readme-stats.vercel.app/api/wakatime?username=myane234&theme=swift)](https://wakatime.com/@myane234)
+
