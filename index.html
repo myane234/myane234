@@ -15,7 +15,7 @@
             margin: 0 auto;
         }
         #game-board {
-            background: #f6f8fa; /* GitHub light background */
+            background: #f6f8fa;
             border: 1px solid #e1e4e8;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
@@ -34,13 +34,12 @@
     </div>
 
     <script>
-        // Load images
         const suiseiHead = new Image();
         suiseiHead.src = 'https://raw.githubusercontent.com/myane234/myane234/main/suisei.png'; 
         
         const appleImg = new Image();
         appleImg.src = 'https://raw.githubusercontent.com/myane234/myane234/main/miko.png';
-        // Game setup
+
         const canvas = document.getElementById('game-board');
         const ctx = canvas.getContext('2d');
         const boxSize = 20;
@@ -50,11 +49,8 @@
         let score = 0;
         let gameSpeed = 150;
 
-        // Auto-move (no keyboard needed)
         function autoPilot() {
             const head = snake[0];
-            
-            // Simple AI: chase food
             if (food.x < head.x && direction !== 'RIGHT') direction = 'LEFT';
             else if (food.x > head.x && direction !== 'LEFT') direction = 'RIGHT';
             else if (food.y < head.y && direction !== 'DOWN') direction = 'UP';
@@ -69,52 +65,42 @@
         }
 
         function draw() {
-            // Clear board
             ctx.fillStyle = '#f6f8fa';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw snake
-            snake.forEach((segment, index) => {
-                if (index === 0) {
-                    ctx.drawImage(suiseiHead, segment.x, segment.y, boxSize, boxSize);
-                } else {
-                    ctx.fillStyle = '#d1d5da';
-                    ctx.fillRect(segment.x, segment.y, boxSize, boxSize);
-                }
-            });
+            const head = snake[0];
 
-            // Draw food
-            ctx.drawImage(appleImg, food.x, food.y, boxSize, boxSize);
+            // Draw only head (no tail)
+            const headSize = boxSize + 6;
+            ctx.drawImage(suiseiHead, head.x - 3, head.y - 3, headSize, headSize);
 
-            // Move snake
+            // Draw food (slightly bigger)
+            const appleSize = boxSize + 2;
+            ctx.drawImage(appleImg, food.x - 1, food.y - 1, appleSize, appleSize);
+
             autoPilot();
-            const head = {x: snake[0].x, y: snake[0].y};
-            
-            if (direction === 'LEFT') head.x -= boxSize;
-            if (direction === 'UP') head.y -= boxSize;
-            if (direction === 'RIGHT') head.x += boxSize;
-            if (direction === 'DOWN') head.y += boxSize;
 
-            // Check collisions
-            if (head.x < 0 || head.x >= canvas.width || 
-                head.y < 0 || head.y >= canvas.height ||
-                snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-                clearInterval(game);
-                alert('GAME OVER! Score: ' + score);
-                document.location.reload();
-                return;
-            }
+            let newHead = {x: head.x, y: head.y};
 
-            snake.unshift(head);
+            if (direction === 'LEFT') newHead.x -= boxSize;
+            if (direction === 'UP') newHead.y -= boxSize;
+            if (direction === 'RIGHT') newHead.x += boxSize;
+            if (direction === 'DOWN') newHead.y += boxSize;
 
-            // Check food collision
-            if (head.x === food.x && head.y === food.y) {
+            // Looping: if out of bounds, warp to other side
+            if (newHead.x < 0) newHead.x = canvas.width - boxSize;
+            if (newHead.x >= canvas.width) newHead.x = 0;
+            if (newHead.y < 0) newHead.y = canvas.height - boxSize;
+            if (newHead.y >= canvas.height) newHead.y = 0;
+
+            // Update head
+            snake[0] = newHead;
+
+            if (newHead.x === food.x && newHead.y === food.y) {
                 score++;
                 document.getElementById('score').textContent = `🍎 Score: ${score}`;
                 food = generateFood();
                 if (gameSpeed > 50) gameSpeed -= 5;
-            } else {
-                snake.pop();
             }
         }
 
