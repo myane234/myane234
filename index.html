@@ -28,17 +28,24 @@
 </head>
 <body>
     <div id="game-container">
-        <h1 style="color: #24292e;">⭐ Suisei Snake</h1>
         <div id="score">🍎 Score: 0</div>
         <canvas id="game-board" width="400" height="400"></canvas>
     </div>
 
     <script>
+        // ==== Konfigurasi Manual ====
+        const SUISEI_IMG_URL = 'https://raw.githubusercontent.com/myane234/myane234/main/suisei.png';
+        const MIKO_IMG_URL = 'https://raw.githubusercontent.com/myane234/myane234/main/miko.png';
+
+        const SUISEI_WIDTH = 30; // px (boxSize + extra)
+        const MIKO_WIDTH = 22;   // px (boxSize + extra)
+        // ============================
+
         const suiseiHead = new Image();
-        suiseiHead.src = 'https://raw.githubusercontent.com/myane234/myane234/main/suisei.png'; 
-        
+        suiseiHead.src = SUISEI_IMG_URL;
+
         const appleImg = new Image();
-        appleImg.src = 'https://raw.githubusercontent.com/myane234/myane234/main/miko.png';
+        appleImg.src = MIKO_IMG_URL;
 
         const canvas = document.getElementById('game-board');
         const ctx = canvas.getContext('2d');
@@ -69,14 +76,9 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const head = snake[0];
+            ctx.drawImage(suiseiHead, head.x - 3, head.y - 3, SUISEI_WIDTH, SUISEI_WIDTH);
 
-            // Draw only head (no tail)
-            const headSize = boxSize + 6;
-            ctx.drawImage(suiseiHead, head.x - 3, head.y - 3, headSize, headSize);
-
-            // Draw food (slightly bigger)
-            const appleSize = boxSize + 2;
-            ctx.drawImage(appleImg, food.x - 1, food.y - 1, appleSize, appleSize);
+            ctx.drawImage(appleImg, food.x - 1, food.y - 1, MIKO_WIDTH, MIKO_WIDTH);
 
             autoPilot();
 
@@ -87,13 +89,12 @@
             if (direction === 'RIGHT') newHead.x += boxSize;
             if (direction === 'DOWN') newHead.y += boxSize;
 
-            // Looping: if out of bounds, warp to other side
+            // Warp looping
             if (newHead.x < 0) newHead.x = canvas.width - boxSize;
             if (newHead.x >= canvas.width) newHead.x = 0;
             if (newHead.y < 0) newHead.y = canvas.height - boxSize;
             if (newHead.y >= canvas.height) newHead.y = 0;
 
-            // Update head
             snake[0] = newHead;
 
             if (newHead.x === food.x && newHead.y === food.y) {
