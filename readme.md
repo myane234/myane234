@@ -4,5 +4,5 @@
 
 ![Myane's GitHub stats](https://github-readme-stats.vercel.app/api?username=myane234&theme=swift&show_icons=true)
 
-![](https://github-readme-streak-stats.herokuapp.com/?user=JustenMX&theme=default&hide_border=true)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=JustenMX&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
+![](https://github-readme-streak-stats.herokuapp.com/?user=Myane234&theme=default&hide_border=true)<br/>
+![](https://github-readme-stats.vercel.app/api/top-langs/?username=Myane234&theme=default&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
