@@ -1,70 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Snake Game | GitHub Style</title>
+    <title>Suisei Snake</title>
     <style>
         body {
-            background: #0d1117;
+            background: white;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             text-align: center;
-            color: #c9d1d9;
             margin: 0;
             padding: 20px;
         }
         #game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
         }
         #game-board {
-            background: #161b22;
-            border: 1px solid #30363d;
-            box-shadow: 0 4px 12px rgba(1, 4, 9, 0.8);
+            background: #f6f8fa; /* GitHub light background */
+            border: 1px solid #e1e4e8;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
-        #score-display {
-            font-size: 20px;
-            color: #58a6ff; 
-            font-weight: 600;
-        }
-        #game-over {
-            font-size: 32px;
-            font-weight: bold;
-            color: #f85149; 
-            height: 40px;
-            margin-top: 10px;
-        }
-        .controls {
-            margin-top: 15px;
-            color: #8b949e;
-            font-size: 14px;
+        #score {
+            color: #24292e;
+            font-size: 18px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <h1 style="color: #58a6ff;">🐍 GitHub Snake</h1>
-        <div id="score-display">🍏 Score: 0</div>
+        <h1 style="color: #24292e;">⭐ Suisei Snake</h1>
+        <div id="score">🍎 Score: 0</div>
         <canvas id="game-board" width="400" height="400"></canvas>
-        <div id="game-over"></div>
-        <div class="controls">
-            Use <strong>Arrow Keys</strong> to control | Reload to restart
-        </div>
     </div>
 
     <script>
+        // Load images
+        const suiseiHead = new Image();
+        suiseiHead.src = 'https://i.pinimg.com/736x/c4/4f/c4/c44fc4ccdb050a62373c159f6474a623.jpg'; 
+        
+        const appleImg = new Image();
+        appleImg.src = 'https://i.pinimg.com/736x/c4/4f/c4/c44fc4ccdb050a62373c159f6474a623.jpg'; // Ganti dengan link PNG apel
+
+        // Game setup
         const canvas = document.getElementById('game-board');
         const ctx = canvas.getContext('2d');
-        const scoreDisplay = document.getElementById('score-display');
-        const gameOverDisplay = document.getElementById('game-over');
-
-       
         const boxSize = 20;
-        let snake = [{ x: 200, y: 200 }];
-        let food = generateFood();
-        let direction = null;
+        let snake = [{x: 200, y: 200}];
+        let food = {x: 100, y: 100};
+        let direction = 'RIGHT';
         let score = 0;
-        let gameRunning = true;
+        let gameSpeed = 150;
+
+        // Auto-move (no keyboard needed)
+        function autoPilot() {
+            const head = snake[0];
+            
+            // Simple AI: chase food
+            if (food.x < head.x && direction !== 'RIGHT') direction = 'LEFT';
+            else if (food.x > head.x && direction !== 'LEFT') direction = 'RIGHT';
+            else if (food.y < head.y && direction !== 'DOWN') direction = 'UP';
+            else if (food.y > head.y && direction !== 'UP') direction = 'DOWN';
+        }
 
         function generateFood() {
             return {
@@ -73,47 +69,40 @@
             };
         }
 
-        // Main game loop
-        function gameLoop() {
-            if (!gameRunning) return;
-
+        function draw() {
             // Clear board
-            ctx.fillStyle = '#161b22';
+            ctx.fillStyle = '#f6f8fa';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Draw snake
             snake.forEach((segment, index) => {
-                ctx.fillStyle = index === 0 ? '#238636' : '#2ea043'; 
-                ctx.fillRect(segment.x, segment.y, boxSize, boxSize);
-                ctx.strokeStyle = '#161b22';
-                ctx.strokeRect(segment.x, segment.y, boxSize, boxSize);
+                if (index === 0) {
+                    ctx.drawImage(suiseiHead, segment.x, segment.y, boxSize, boxSize);
+                } else {
+                    ctx.fillStyle = '#d1d5da';
+                    ctx.fillRect(segment.x, segment.y, boxSize, boxSize);
+                }
             });
 
-           
-            ctx.fillStyle = '#f85149'; 
-            ctx.beginPath();
-            ctx.arc(
-                food.x + boxSize/2, 
-                food.y + boxSize/2, 
-                boxSize/2 - 2, 
-                0, 
-                Math.PI * 2
-            );
-            ctx.fill();
+            // Draw food
+            ctx.drawImage(appleImg, food.x, food.y, boxSize, boxSize);
 
-           
-            const head = { ...snake[0] };
+            // Move snake
+            autoPilot();
+            const head = {x: snake[0].x, y: snake[0].y};
+            
             if (direction === 'LEFT') head.x -= boxSize;
             if (direction === 'UP') head.y -= boxSize;
             if (direction === 'RIGHT') head.x += boxSize;
             if (direction === 'DOWN') head.y += boxSize;
 
-           
-            if (
-                head.x < 0 || head.x >= canvas.width ||
+            // Check collisions
+            if (head.x < 0 || head.x >= canvas.width || 
                 head.y < 0 || head.y >= canvas.height ||
-                snake.some(segment => segment.x === head.x && segment.y === head.y)
-            ) {
-                gameOver();
+                snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                clearInterval(game);
+                alert('GAME OVER! Score: ' + score);
+                document.location.reload();
                 return;
             }
 
@@ -122,30 +111,15 @@
             // Check food collision
             if (head.x === food.x && head.y === food.y) {
                 score++;
-                scoreDisplay.textContent = `🍏 Score: ${score}`;
+                document.getElementById('score').textContent = `🍎 Score: ${score}`;
                 food = generateFood();
+                if (gameSpeed > 50) gameSpeed -= 5;
             } else {
                 snake.pop();
             }
         }
 
-        function gameOver() {
-            gameRunning = false;
-            gameOverDisplay.textContent = 'GAME OVER!';
-            canvas.style.opacity = '0.7';
-        }
-
-        // Keyboard controls
-        document.addEventListener('keydown', e => {
-            if (!gameRunning) return;
-            if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
-            if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
-            if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
-            if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
-        });
-
-        // Start game
-        setInterval(gameLoop, 150);
+        const game = setInterval(draw, gameSpeed);
     </script>
 </body>
 </html>
