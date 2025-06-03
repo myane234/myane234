@@ -1,111 +1,88 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Suisei Snake</title>
-    <style>
-        body {
-            background: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-        }
-        #game-container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        #game-board {
-            background: #f6f8fa;
-            border: 1px solid #e1e4e8;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        #score {
-            color: #24292e;
-            font-size: 18px;
-            margin: 10px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Ujian Matematika</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
+    h2 { color: #333; }
+    .section { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
+    input, button, textarea { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background: #45a049; }
+    .result { background: #e7f4e4; padding: 10px; border-radius: 5px; margin-top: 10px; }
+  </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="score">🍎 Score: 0</div>
-        <canvas id="game-board" width="400" height="400"></canvas>
-    </div>
+  <h1>Kalkulator Ujian Matematika</h1>
 
-    <script>
-        // ==== Konfigurasi Manual ====
-        const SUISEI_IMG_URL = 'https://raw.githubusercontent.com/myane234/myane234/main/suisei.png';
-        const MIKO_IMG_URL = 'https://raw.githubusercontent.com/myane234/myane234/main/miko.png';
+  <div class="section">
+    <h2>1. Statistika</h2>
+    <label>Masukkan data (pisahkan dengan koma):</label>
+    <input type="text" id="dataInput" placeholder="contoh: 4, 7, 2, 9, 4">
+    <button onclick="hitungStatistika()">Hitung</button>
+    <div class="result" id="statResult"></div>
+  </div>
 
-        const SUISEI_WIDTH = 30; // px (boxSize + extra)
-        const MIKO_WIDTH = 22;   // px (boxSize + extra)
-        // ============================
+  <div class="section">
+    <h2>2. Persamaan Kuadrat</h2>
+    <label>Masukkan a:</label>
+    <input type="number" id="a">
+    <label>Masukkan b:</label>
+    <input type="number" id="b">
+    <label>Masukkan c:</label>
+    <input type="number" id="c">
+    <button onclick="hitungKuadrat()">Hitung</button>
+    <div class="result" id="kuadratResult"></div>
+  </div>
 
-        const suiseiHead = new Image();
-        suiseiHead.src = SUISEI_IMG_URL;
+  <script>
+    function hitungStatistika() {
+      const data = document.getElementById('dataInput').value.split(',').map(Number).sort((a,b)=>a-b);
+      if (data.some(isNaN)) {
+        document.getElementById('statResult').innerText = 'Data tidak valid';
+        return;
+      }
 
-        const appleImg = new Image();
-        appleImg.src = MIKO_IMG_URL;
+      const mean = data.reduce((a, b) => a + b, 0) / data.length;
+      const median = data.length % 2 === 0 ?
+        (data[data.length/2 - 1] + data[data.length/2]) / 2 :
+        data[Math.floor(data.length/2)];
 
-        const canvas = document.getElementById('game-board');
-        const ctx = canvas.getContext('2d');
-        const boxSize = 20;
-        let snake = [{x: 200, y: 200}];
-        let food = {x: 100, y: 100};
-        let direction = 'RIGHT';
-        let score = 0;
-        let gameSpeed = 150;
+      const frekuensi = {};
+      data.forEach(n => frekuensi[n] = (frekuensi[n] || 0) + 1);
+      const maxFreq = Math.max(...Object.values(frekuensi));
+      const modus = Object.keys(frekuensi).filter(k => frekuensi[k] === maxFreq);
 
-        function autoPilot() {
-            const head = snake[0];
-            if (food.x < head.x && direction !== 'RIGHT') direction = 'LEFT';
-            else if (food.x > head.x && direction !== 'LEFT') direction = 'RIGHT';
-            else if (food.y < head.y && direction !== 'DOWN') direction = 'UP';
-            else if (food.y > head.y && direction !== 'UP') direction = 'DOWN';
-        }
+      document.getElementById('statResult').innerHTML = `
+        <strong>Mean:</strong> ${mean.toFixed(2)}<br>
+        <strong>Median:</strong> ${median}<br>
+        <strong>Modus:</strong> ${modus.join(', ')}
+      `;
+    }
 
-        function generateFood() {
-            return {
-                x: Math.floor(Math.random() * 20) * boxSize,
-                y: Math.floor(Math.random() * 20) * boxSize
-            };
-        }
+    function hitungKuadrat() {
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const c = parseFloat(document.getElementById('c').value);
+      const D = b*b - 4*a*c;
+      let hasil = `<strong>Diskriminan (D):</strong> ${D}<br>`;
 
-        function draw() {
-            ctx.fillStyle = '#f6f8fa';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const head = snake[0];
-            ctx.drawImage(suiseiHead, head.x - 3, head.y - 3, SUISEI_WIDTH, SUISEI_WIDTH);
-
-            ctx.drawImage(appleImg, food.x - 1, food.y - 1, MIKO_WIDTH, MIKO_WIDTH);
-
-            autoPilot();
-
-            let newHead = {x: head.x, y: head.y};
-
-            if (direction === 'LEFT') newHead.x -= boxSize;
-            if (direction === 'UP') newHead.y -= boxSize;
-            if (direction === 'RIGHT') newHead.x += boxSize;
-            if (direction === 'DOWN') newHead.y += boxSize;
-
-            // Warp looping
-            if (newHead.x < 0) newHead.x = canvas.width - boxSize;
-            if (newHead.x >= canvas.width) newHead.x = 0;
-            if (newHead.y < 0) newHead.y = canvas.height - boxSize;
-            if (newHead.y >= canvas.height) newHead.y = 0;
-
-            snake[0] = newHead;
-
-            if (newHead.x === food.x && newHead.y === food.y) {
-                score++;
-                document.getElementById('score').textContent = `🍎 Score: ${score}`;
-                food = generateFood();
-                if (gameSpeed > 50) gameSpeed -= 5;
-            }
-        }
-
-        const game = setInterval(draw, gameSpeed);
-    </script>
+      if (D > 0) {
+        const x1 = (-b + Math.sqrt(D)) / (2*a);
+        const x2 = (-b - Math.sqrt(D)) / (2*a);
+        hasil += `Akar-akar real: x1 = ${x1}, x2 = ${x2}<br>`;
+      } else if (D === 0) {
+        const x = -b / (2*a);
+        hasil += `Akar kembar: x = ${x}<br>`;
+      } else {
+        hasil += 'Akar imajiner (tidak real)<br>';
+      }
+      hasil += `Jumlah akar: ${-b/a}<br>Hasil kali akar: ${c/a}`;
+      document.getElementById('kuadratResult').innerHTML = hasil;
+    }
+  </script>
 </body>
 </html>
