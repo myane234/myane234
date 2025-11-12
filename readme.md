@@ -14,6 +14,7 @@
 
 <br/>
 
-(https://github-readme-stats.vercel.app/api/top-langs/?username=myane234&layout=compact&theme=radical&hide_border=true&langs_count=3)
-
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=myane234&layout=compact&theme=radical&hide_border=true&langs_count=3" />
+</p>
 
