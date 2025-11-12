@@ -14,6 +14,6 @@
 
 <br/>
 
-### 📊 GitHub Stats
+(https://github-readme-stats.vercel.app/api/top-langs/?username=myane234&layout=compact&theme=radical&hide_border=true&langs_count=3)
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=radical&hide_border=true)
+
