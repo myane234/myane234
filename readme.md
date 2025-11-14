@@ -18,3 +18,11 @@
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=myane234&layout=compact&theme=radical&hide_border=true&langs_count=3" />
 </p>
 
+<div style="display: flex; gap: 10px;">
+  <img src="https://github-readme-stats.vercel.app/api?username=myane234&show_icons=true" />
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=myane234" />
+</div>
+
+[![trophy](https://github-profile-trophy.vercel.app/?username=myane234)](https://github.com/ryo-ma/github-profile-trophy)
+
+
