@@ -27,6 +27,15 @@
   </table>
 </div>
 
+<br/>
+
+<div align="center">
+  <a href="https://git.io/streak-stats">
+    <img src="https://streak-stats.demolab.com?user=myane234&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D" alt="GitHub Streak" />
+  </a>
+</div>
+
+<br/>
 
 <div align="center">
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=myane234&theme=tokyonight&bg_color=1a1b26&hide_border=true" width="100%"/>
